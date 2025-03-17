@@ -22,6 +22,13 @@ export async function importData() {
       getoetete: parseInt(entry.Getötete, 10),
     }));
 
+    //TODO: delete debug log statement
+    if (transformedData.length > 0) {
+      console.log("First transformed entry:", transformedData[0]);
+    } else {
+      console.warn("No data transformed.");
+    }
+
 
     await db.accidents.bulkPut(transformedData);
     console.log("Data imported successfully!");
