@@ -1,47 +1,69 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+import Footer from './components/Footer.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <img alt="KFV logo" class="logo" src="./assets/KFV_Logo.jpg" width="203" height="93" />
+      <div class="title">
+        <h1>Verkehrstote in Österreich</h1>
+        <h2>Nach Bundesland und Berichtsjahr</h2>
+      </div>
     </div>
   </header>
 
   <main>
-    <TheWelcome />
+    <p>Platzhalter</p>
   </main>
+
+  <footer>
+    <Footer />
+  </footer>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .logo {
-    margin: 0 2rem 0 0;
+    margin-bottom: 1rem;
   }
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.title {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  height: auto;
+  max-width: 100%;
+}
+
+header .wrapper {
+  display: flex;
+  place-items: flex-start;
+  flex-wrap: wrap;
 }
 </style>

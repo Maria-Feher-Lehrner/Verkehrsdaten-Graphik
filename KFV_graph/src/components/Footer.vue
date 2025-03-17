@@ -3,7 +3,7 @@
 
 <template>
   <div class="footer-container">
-    <p>©2025 <a href="https://github.com/Maria-Feher-Lehrner/Verkehrsdaten-Graphik" target="_blank">Maria Feher-Lehrner</a></p>
+    <p>© 2025 <a href="https://github.com/Maria-Feher-Lehrner/Verkehrsdaten-Graphik" target="_blank">Maria Feher-Lehrner</a></p>
   </div>
 
 </template>
