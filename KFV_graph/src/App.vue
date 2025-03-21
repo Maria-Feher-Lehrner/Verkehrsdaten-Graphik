@@ -10,8 +10,6 @@ const importComplete = computed(() => uiStore.importComplete)
 
 <template>
   <header>
-
-
     <div class="wrapper">
       <img alt="KFV logo" class="logo" src="./assets/KFV_Logo.jpg" width="203" height="93" />
       <div class="title">
