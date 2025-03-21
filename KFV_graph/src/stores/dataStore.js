@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { getAggregatedData, transformDataForChart } from '../repository/dataService'
+import { getAggregatedData, getFilterValues, transformDataForChart } from '../repository/dataService'
 
 export const useDataStore = defineStore('dataStore', {
   state: () => ({
     chartData: { labels: [], datasets: [] },
-    filters: {},
+    activeFilters: { topic: '', value: '' },
     groupBy: "bundesland",
+    availableFilters: {}
   }),
 
   actions: {
@@ -13,7 +14,8 @@ export const useDataStore = defineStore('dataStore', {
       console.log('[DEBUG] Fetching chart data from IndexedDB...')
 
       try {
-        const aggregatedData = await getAggregatedData(this.groupBy, this.filters)
+        const aggregatedData = await getAggregatedData(this.groupBy, this.activeFilters)
+        console.log('[DEBUG] Active filters: ', this.activeFilters.value)
         console.log('[DEBUG] Received Aggregated Data:', aggregatedData.length, 'entries')
 
         if (!aggregatedData || aggregatedData.length === 0) {
@@ -26,10 +28,17 @@ export const useDataStore = defineStore('dataStore', {
         console.error('[ERROR] Failed to fetch chart data:', error)
       }
     },
-    setFilters(newFilters) {
-      this.filters = newFilters
-      this.fetchData()
+
+    async loadAvailableFilters() {
+      this.availableFilters = await getFilterValues();
+      console.log('[DEBUG] Available filter values:', this.availableFilters);
     },
+
+    setFilters(topic, value) {
+      this.activeFilters = { topic, value };
+      this.fetchData();
+    },
+
     setGroupBy(group) {
       this.groupBy = group
       this.fetchData()

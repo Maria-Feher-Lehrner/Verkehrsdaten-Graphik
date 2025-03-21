@@ -7,7 +7,7 @@ export async function importData() {
     const response = await fetch('https://dashboards.kfv.at/api/udm_verkehrstote/json')
     const jsonData = await response.json()
 
-    //transforms IDs from json into mapped data for local db
+    //transforms IDs from API-json into mapped data for local db
     const mappedData = jsonData.verkehrstote.map(entry => ({
       jahr: entry.Berichtsjahr,
       monat: dataMappings.Monat_ID[entry.Monat_ID] || 'Unbekannt',
@@ -38,9 +38,8 @@ async function fetchAllLocalData() {
 }
 
 function applyFilters(data, filters) {
-  return data.filter(entry =>
-    Object.entries(filters).every(([key, value]) => entry[key] === value)
-  );
+  if (!filters.topic || !filters.value) return data; // No filtering if empty
+  return data.filter(entry => entry[filters.topic] === filters.value);
 }
 
 function aggregateDataByGroup(filteredData, groupBy) {
@@ -60,7 +59,6 @@ function aggregateDataByGroup(filteredData, groupBy) {
     aggregationMap[key].totalFatalities += entry.getoetete;
   });
 
-  //return Object.values(aggregationMap);
   const result = Object.values(aggregationMap)
   console.log('[DEBUG] Aggregated Data:', result.slice(0, 5))
   return result
@@ -68,13 +66,13 @@ function aggregateDataByGroup(filteredData, groupBy) {
 
 export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
   try {
-    console.log('[DEBUG] Fetching aggregated data with groupBy:', groupBy, 'and filters:', filters)
+    console.log('[DEBUG] Fetching aggregated data with groupBy:', groupBy, 'and activeFilters:', filters)
 
     const allData = await fetchAllLocalData();
     console.log('[DEBUG] Retrieved', allData.length, 'entries from IndexedDB')
 
     const filteredData = applyFilters(allData, filters);
-    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying filters');
+    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying activeFilters');
 
     return aggregateDataByGroup(filteredData, groupBy);
   } catch (error) {
@@ -125,4 +123,29 @@ export function transformDataForChart(aggregatedData) {
     datasets: sortedDatasets,
   };
 }
+
+export async function getFilterValues() {
+  const allData = await fetchAllLocalData();
+
+  const uniqueValues = {
+    gebiet: new Set(),
+    verkehrsart: new Set(),
+    alterGr: new Set(),
+    geschlecht: new Set(),
+    ursache: new Set()
+  };
+
+  allData.forEach(entry => {
+    Object.keys(uniqueValues).forEach(key => {
+      if (entry[key]) {
+        uniqueValues[key].add(entry[key]);
+      }
+    });
+  });
+
+  return Object.fromEntries(
+    Object.entries(uniqueValues).map(([key, valueSet]) => [key, [...valueSet]])
+  );
+}
+
 
