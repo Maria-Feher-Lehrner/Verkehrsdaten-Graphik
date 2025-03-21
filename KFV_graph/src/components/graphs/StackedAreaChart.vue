@@ -1,49 +1,59 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import CanvasJS from 'canvasjs'
+import { defineProps, watch } from 'vue'
+import { defineChartComponent } from 'vue-chart-3'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale
+} from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, LineController, LineElement, PointElement, LinearScale, CategoryScale)
+
+const LineChart = defineChartComponent('LineChart', 'line')
 
 const props = defineProps({
-  data: {
-    type: Array,
-    required: true
+  chartData: {
+    type: Object,
+    required: true,
+    default: () => ({ labels: [], datasets: [] }) // Ensures the StackedAreaChart Component always has a default
   }
 })
 
-const chartContainer = ref(null)
+// TODO: delete degbug watcher
+watch(() => props.chartData, (newVal) => {
+  console.log("[DEBUG] chartData received in StackedAreaChart:", newVal);
+}, { deep: true });
 
-const createChart = () => {
-  const chart = new CanvasJS.Chart(chartContainer.value, {
-    theme: 'light2',
-    animationEnabled: true,
-    title: {
-      text: 'Verkehrstote in Österreich'
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: { position: 'top' }
+  },
+  scales: {
+    x: {
+      type: 'category'
     },
-    axisX: {
-      title: 'Jahr'
-    },
-    axisY: {
-      title: 'Anzahl der Toten',
-      includeZero: true
-    },
-    data: props.data.map(bundeslandData => ({
-      type: 'area',
-      name: bundeslandData.bundesland,
-      showInLegend: true,
-      dataPoints: bundeslandData.dataPoints
-    }))
-  })
-
-  chart.render()
+    y: {
+      stacked: true
+    }
+  },
+  elements: {
+    line: {
+      fill: true
+    }
+  }
 }
-
-onMounted(() => {
-  createChart()
-})
 
 </script>
 
 <template>
-  <div ref="chartContainer" style="height: 400px; width: 100%;"></div>
+  <LineChart :chart-data="chartData" :options="chartOptions" />
 </template>
 
 <style scoped>
