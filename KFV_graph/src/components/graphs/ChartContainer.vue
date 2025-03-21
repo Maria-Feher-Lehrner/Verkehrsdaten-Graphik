@@ -7,10 +7,7 @@ import StackedBarChart from './StackedBarChart.vue'
 
 const dataStore = useDataStore()
 const uiStore = useUIStore()
-
-//TODO: implement toggle logic
 const chartType = computed(() => uiStore.chartType)
-
 const chartData = computed(() => dataStore.chartData || { labels: [], datasets: [] })
 
 console.log('[DEBUG] chartData in ChartContainer:', chartData.value)
@@ -41,17 +38,15 @@ watch(isChartDataReady, (newVal) => {
 
 <template>
   <div>
-    <button @click="toggleChartType">Toggle Chart Type</button>
+    <button v-if="chartType==='stackedArea'" @click="toggleChartType">Zu Balkendiagramm wechseln</button>
+    <button v-if="chartType==='stackedBar'" @click="toggleChartType">Zu Flächendiagramm wechseln</button>
 
     <div v-if="isChartDataReady && chartData?.datasets?.length">
-      <StackedAreaChart v-if="isChartDataReady" :chartData="chartData || { labels: [], datasets: [] }" />
-    </div>
-
-    <div v-else>
-      <StackedBarChart v-if="chartData?.datasets?.length" :chartData="chartData || { labels: [], datasets: [] }" />
+      <StackedAreaChart v-if="chartType==='stackedArea'" :chartData="chartData || { labels: [], datasets: [] }" />
+      <StackedBarChart v-if="chartType==='stackedBar'" :chartData="chartData || { labels: [], datasets: [] }" />
     </div>
     <div v-else>
-      <p>Loading Chart...</p>
+      <p>Fehler beim Importieren der Daten</p>
     </div>
   </div>
 </template>

@@ -7,7 +7,7 @@ export const useUIStore = defineStore("uiStore", {
   }),
   actions: {
     toggleChart() {
-      this.chartType = this.chartType === "stackedArea" ? "bar" : "stackedArea";
+      this.chartType = this.chartType === "stackedArea" ? "stackedBar" : "stackedArea";
     },
     setImportComplete(value) {
       this.importComplete = value;
