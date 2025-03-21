@@ -1,35 +1,57 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useChartStore } from '@/stores/chart.js'
-import StackedAreaChart from './StackedAreaChart.vue';
-import StackedBarChart from './StackedBarChart.vue';
+import { computed, watch, toRaw } from 'vue'
+import { useDataStore } from '@/stores/dataStore.js'
+import { useUIStore } from '@/stores/uiStore.js'
+import StackedAreaChart from './StackedAreaChart.vue'
+import StackedBarChart from './StackedBarChart.vue'
 
-const chartStore = useChartStore();
-const chartType = ref(chartStore.chartType); // 'stackedArea' or 'stackedBar'
+const dataStore = useDataStore()
+const uiStore = useUIStore()
+
+//TODO: implement toggle logic
+const chartType = computed(() => uiStore.chartType)
+
+const chartData = computed(() => dataStore.chartData || { labels: [], datasets: [] })
+
+console.log('[DEBUG] chartData in ChartContainer:', chartData.value)
+console.log('[DEBUG] chartData type:', typeof chartData.value)
+console.log('[DEBUG] chartData is an array?', Array.isArray(chartData.value.datasets))
+console.log('Chart Data stringified:', JSON.stringify(chartData.value))
+
+const isChartDataReady = computed(() => {
+  console.log('[DEBUG] Checking isChartDataReady:', chartData.value)
+  return chartData.value?.datasets?.length > 0
+})
 
 const toggleChartType = () => {
-  chartType.value = chartType.value === 'stackedArea' ? 'stackedBar' : 'stackedArea';
-  chartStore.setChartType(chartType.value);
-};
+  uiStore.toggleChart()
+}
 
-const formattedData = computed(() => {
-  return chartStore.data.map(bundeslandData => ({
-    bundesland: bundeslandData.bundesland,
-    dataPoints: bundeslandData.dataPoints,
-  }));
-});
+//TODO: delete debug watchers
+watch(chartData, (newVal, oldVal) => {
+  console.log('[DEBUG] chartData updated in ChartContainer:', newVal)
+  console.log('[DEBUG] Previous chartData:', oldVal)
+}, { deep: true, immediate: true })
+
+watch(isChartDataReady, (newVal) => {
+  console.log('[DEBUG] isChartDataReady changed:', newVal)
+})
+
 </script>
 
 <template>
   <div>
-    <div>
-      <button @click="toggleChartType">Toggle Chart Type</button>
+    <button @click="toggleChartType">Toggle Chart Type</button>
+
+    <div v-if="isChartDataReady && chartData?.datasets?.length">
+      <StackedAreaChart v-if="isChartDataReady" :chartData="chartData || { labels: [], datasets: [] }" />
     </div>
-    <div v-if="chartType === 'stackedArea'">
-      <StackedAreaChart :data="formattedData" />
+
+    <div v-else>
+      <StackedBarChart v-if="chartData?.datasets?.length" :chartData="chartData || { labels: [], datasets: [] }" />
     </div>
     <div v-else>
-      <StackedBarChart :data="formattedData" />
+      <p>Loading Chart...</p>
     </div>
   </div>
 </template>
