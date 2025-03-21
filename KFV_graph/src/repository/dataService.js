@@ -1,4 +1,4 @@
-import { mappings } from '../utils/mappings.js'
+import { dataMappings, bundeslandColors } from '../utils/mappings.js'
 import { db } from './db.js'
 
 export async function importData() {
@@ -8,67 +8,103 @@ export async function importData() {
     const jsonData = await response.json()
 
     //transforms IDs from json into mapped data for local db
-    const transformedData = jsonData.verkehrstote.map(entry => ({
+    const mappedData = jsonData.verkehrstote.map(entry => ({
       jahr: entry.Berichtsjahr,
-      monat: mappings.Monat_ID[entry.Monat_ID] || 'Unbekannt',
+      monat: dataMappings.Monat_ID[entry.Monat_ID] || 'Unbekannt',
       stunde: parseInt(entry.Stunde_ID, 10),
-      wochentag: mappings.Wochentag_ID[entry.Wochentag_ID] || 'Unbekannt',
-      bundesland: mappings.Bundesland_ID[entry.Bundesland_ID] || 'Unbekannt',
-      gebiet: mappings.Gebiet_ID[entry.Gebiet_ID] || 'Unbekannt',
-      verkehrsart: mappings.Verkehrsart_ID[entry.Verkehrsart_ID] || 'Unbekannt',
-      alterGr: mappings.AlterGr_ID[entry.AlterGr_ID] || 'Unbekannt',
-      geschlecht: mappings.Geschlecht_ID[entry.Geschlecht_ID] || 'Unbekannt',
-      ursache: mappings.Ursache_ID[entry.Ursache_ID] || 'Unbekannt',
+      wochentag: dataMappings.Wochentag_ID[entry.Wochentag_ID] || 'Unbekannt',
+      bundesland: dataMappings.Bundesland_ID[entry.Bundesland_ID] || 'Unbekannt',
+      gebiet: dataMappings.Gebiet_ID[entry.Gebiet_ID] || 'Unbekannt',
+      verkehrsart: dataMappings.Verkehrsart_ID[entry.Verkehrsart_ID] || 'Unbekannt',
+      alterGr: dataMappings.AlterGr_ID[entry.AlterGr_ID] || 'Unbekannt',
+      geschlecht: dataMappings.Geschlecht_ID[entry.Geschlecht_ID] || 'Unbekannt',
+      ursache: dataMappings.Ursache_ID[entry.Ursache_ID] || 'Unbekannt',
       getoetete: parseInt(entry.Getötete, 10) || 0
     }))
 
-    //TODO: delete debug log statement
-    if (transformedData.length > 0) {
-      console.log('First transformed entry:', JSON.parse(JSON.stringify(transformedData[0])))
-    } else {
-      console.warn('No data transformed.')
-    }
+    // Clears the previous data in IndexedDB before inserting new data
+    await db.accidents.clear();
+    console.log('Old data cleared from IndexedDB.');
 
-
-    await db.accidents.bulkPut(transformedData)
+    await db.accidents.bulkPut(mappedData)
     console.log('Data imported successfully!')
   } catch (error) {
     console.error('Error importing data:', error)
   }
+}
 
-  export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
-    try {
-      // Fetches all accident records from local IndexedDB
-      const allData = await db.accidents.toArray()
+async function fetchAllLocalData() {
+  return await db.accidents.toArray();
+}
 
-      const aggregationMap = {}
+function applyFilters(data, filters) {
+  return data.filter(entry =>
+    Object.entries(filters).every(([key, value]) => entry[key] === value)
+  );
+}
 
-      allData.forEach(entry => {
-        // Applies filters (if any)
-        for (const [key, value] of Object.entries(filters)) {
-          if (entry[key] !== value) return
-        }
+function aggregateDataByGroup(filteredData, groupBy) {
+  const aggregationMap = {};
 
-        const key = `${year}-${bundesland}`
+  filteredData.forEach(entry => {
+    const key = `${entry.jahr}-${entry[groupBy]}`;
 
-        // Creates new entry if key not yet existent, adds data to map key if already present
-        if (!aggregationMap[key]) {
-          aggregationMap[key] = {
-            jahr: entry.jahr,
-            [groupBy]: entry[groupBy],
-            totalFatalities: 0
-          }
-        }
-
-        aggregationMap[key].totalFatalities += entry.getoetete
-      })
-
-      // Converts aggregation map into an array for expected data structure for canvasjs graph
-      return Object.values(aggregationMap)
-    } catch (error) {
-      console.error('Error aggregating data:', error)
-      return []
+    if (!aggregationMap[key]) {
+      aggregationMap[key] = {
+        jahr: entry.jahr,
+        [groupBy]: entry[groupBy],
+        totalFatalities: 0
+      };
     }
-  }
 
+    aggregationMap[key].totalFatalities += entry.getoetete;
+  });
+
+  //return Object.values(aggregationMap);
+  const result = Object.values(aggregationMap)
+  console.log('[DEBUG] Aggregated Data:', result.slice(0, 5))
+  return result
+}
+
+export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
+  try {
+    console.log('[DEBUG] Fetching aggregated data with groupBy:', groupBy, 'and filters:', filters)
+
+    const allData = await fetchAllLocalData();
+    console.log('[DEBUG] Retrieved', allData.length, 'entries from IndexedDB')
+
+    const filteredData = applyFilters(allData, filters);
+    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying filters');
+
+    return aggregateDataByGroup(filteredData, groupBy);
+  } catch (error) {
+    console.error('Error aggregating data:', error);
+    return [];
+  }
+}
+
+export function transformDataForChart(aggregatedData) {
+  const labels = [...new Set(aggregatedData.map(entry => entry.jahr))].sort();
+  const datasetsMap = new Map();
+
+  aggregatedData.forEach(entry => {
+    const { jahr, bundesland, totalFatalities } = entry;
+
+    if (!datasetsMap.has(bundesland)) {
+      datasetsMap.set(bundesland, {
+        label: bundesland,
+        backgroundColor: bundeslandColors[bundesland.toLowerCase()] || "#CCCCCC",
+        data: Array(labels.length).fill(0)
+      });
+    }
+
+    const dataset = datasetsMap.get(bundesland);
+    const index = labels.indexOf(jahr);
+    dataset.data[index] = totalFatalities;
+  });
+
+  return {
+    labels,
+    datasets: Array.from(datasetsMap.values())
+  };
 }
