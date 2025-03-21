@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useUIStore } from '@/stores/uiStore.js'
 import Footer from './components/Footer.vue'
 import ChartContainer from '@/components/graphs/ChartContainer.vue'
+import Filters from '@/components/filters/Filters.vue'
 
 const uiStore = useUIStore()
 const importComplete = computed(() => uiStore.importComplete)
@@ -26,6 +27,7 @@ const importComplete = computed(() => uiStore.importComplete)
     </div>
     <div v-else>
       <ChartContainer/>
+      <Filters/>
     </div>
   </main>
 
