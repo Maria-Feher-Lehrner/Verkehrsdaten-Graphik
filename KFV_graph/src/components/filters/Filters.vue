@@ -61,6 +61,8 @@ const updateValues = () => {
 <style scoped>
 .filters {
   padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
   background: #E7E773;
