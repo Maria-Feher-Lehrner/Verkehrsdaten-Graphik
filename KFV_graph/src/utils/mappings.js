@@ -1,4 +1,4 @@
-export const mappings = {
+export const dataMappings = {
   Monat_ID: {
     "1": "Januar", "2": "Februar", "3": "März", "4": "April", "5": "Mai", "6": "Juni",
     "7": "Juli", "8": "August", "9": "September", "10": "Oktober", "11": "November", "12": "Dezember"
@@ -34,4 +34,15 @@ export const mappings = {
     "-1": "ohne Angabe", "1": "Nichtangepasste Geschw.", "2": "Rotlichtmissachtung", "3": "Überholen", "4": "Ablenkung", "5": "Drogen", "6": "Übermüdung",
     "7": "Fehlverh. Fußg.", "8": "Sonstige", "9": "Sonstige", "10": "Sonstige", "11": "Sonstige", "12": "Sonstige"
   },
+};
+
+export const bundeslandColors = {
+  wien: "#B91015",
+  burgenland: "#F8DD2B",
+  niederösterreich: "#1F3E9D",
+  steiermark: "#1F7F26",
+  tirol: "#6C67BC",
+  salzburg: "#D78A33",
+  vorarlberg: "#E946B0",
+  kärnten: "#70B3F4"
 };
