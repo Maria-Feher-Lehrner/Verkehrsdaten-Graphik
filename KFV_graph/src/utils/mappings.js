@@ -37,12 +37,13 @@ export const dataMappings = {
 };
 
 export const bundeslandColors = {
-  wien: "#B91015",
   burgenland: "#F8DD2B",
+  kärnten: "#70B3F4",
   niederösterreich: "#1F3E9D",
+  oberösterreich: "#99C001",
+  salzburg: "#D78A33",
   steiermark: "#1F7F26",
   tirol: "#6C67BC",
-  salzburg: "#D78A33",
   vorarlberg: "#E946B0",
-  kärnten: "#70B3F4"
+  wien: "#B91015"
 };
