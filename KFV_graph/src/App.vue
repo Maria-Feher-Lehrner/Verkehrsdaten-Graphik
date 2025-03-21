@@ -1,5 +1,11 @@
 <script setup>
+import { computed } from 'vue'
+import { useUIStore } from '@/stores/uiStore.js'
 import Footer from './components/Footer.vue'
+import ChartContainer from '@/components/graphs/ChartContainer.vue'
+
+const uiStore = useUIStore()
+const importComplete = computed(() => uiStore.importComplete)
 </script>
 
 <template>
@@ -16,7 +22,13 @@ import Footer from './components/Footer.vue'
   </header>
 
   <main>
-    <p>Platzhalter</p>
+    <div v-if="!importComplete" class="spinner-container">
+      <div class="spinner"></div>
+      <p>Daten werden geladen, bitte warten...</p>
+    </div>
+    <div v-else>
+      <ChartContainer/>
+    </div>
   </main>
 
   <footer>
@@ -25,6 +37,28 @@ import Footer from './components/Footer.vue'
 </template>
 
 <style scoped>
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 header {
   display: flex;
   justify-content: center;
