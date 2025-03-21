@@ -1,16 +1,24 @@
 import './assets/main.css'
-
+import App from './App.vue'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import App from './App.vue'
 import { importData } from "./repository/dataService.js"
+import { useUIStore } from "./stores/uiStore.js"
+import { useDataStore } from "./stores/dataStore.js"
 
 const app = createApp(App)
-
-importData().then(() => {
-  console.log("Data import complete. App is ready.");
-});
-
 app.use(createPinia())
 
-app.mount('#app')
+const uiStore = useUIStore()
+const dataStore = useDataStore()
+
+const initApp = async () => {
+  await importData()
+  console.log("Data import complete. App is ready.")
+  uiStore.setImportComplete(true)
+  await dataStore.fetchData()
+}
+
+initApp().then(() => {
+  app.mount('#app')
+})
