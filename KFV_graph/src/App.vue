@@ -67,7 +67,8 @@ header {
 
 h1, h2 {
   padding: 0;
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
   color: #00489A;
 }
 
