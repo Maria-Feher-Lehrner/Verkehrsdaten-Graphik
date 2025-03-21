@@ -83,19 +83,34 @@ export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
   }
 }
 
+
+function createDataset(bundesland, labels) {
+  return {
+    label: bundesland,
+    backgroundColor: bundeslandColors[bundesland.toLowerCase()] || "#CCCCCC",
+    data: Array(labels.length).fill(0),
+  };
+}
+
+function sortDatasetsByLabel(datasets) {
+  return datasets.sort((a, b) => {
+    const bundeslandA = a.label;
+    const bundeslandB = b.label;
+    return bundeslandA.localeCompare(bundeslandB); // Sorting alphabetically
+  });
+}
+
 export function transformDataForChart(aggregatedData) {
+
   const labels = [...new Set(aggregatedData.map(entry => entry.jahr))].sort();
+
   const datasetsMap = new Map();
 
   aggregatedData.forEach(entry => {
     const { jahr, bundesland, totalFatalities } = entry;
 
     if (!datasetsMap.has(bundesland)) {
-      datasetsMap.set(bundesland, {
-        label: bundesland,
-        backgroundColor: bundeslandColors[bundesland.toLowerCase()] || "#CCCCCC",
-        data: Array(labels.length).fill(0)
-      });
+      datasetsMap.set(bundesland, createDataset(bundesland, labels));
     }
 
     const dataset = datasetsMap.get(bundesland);
@@ -103,8 +118,11 @@ export function transformDataForChart(aggregatedData) {
     dataset.data[index] = totalFatalities;
   });
 
+  const sortedDatasets = sortDatasetsByLabel(Array.from(datasetsMap.values()));
+
   return {
     labels,
-    datasets: Array.from(datasetsMap.values())
+    datasets: sortedDatasets,
   };
 }
+
