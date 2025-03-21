@@ -37,7 +37,7 @@ watch(isChartDataReady, (newVal) => {
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <button v-if="chartType==='stackedArea'" @click="toggleChartType">Zu Balkendiagramm wechseln</button>
     <button v-if="chartType==='stackedBar'" @click="toggleChartType">Zu Flächendiagramm wechseln</button>
 
@@ -52,5 +52,7 @@ watch(isChartDataReady, (newVal) => {
 </template>
 
 <style scoped>
-
+.container{
+  padding: 1rem;
+}
 </style>

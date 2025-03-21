@@ -65,6 +65,12 @@ header {
   padding: 1rem;
 }
 
+h1, h2 {
+  padding: 0;
+  margin: 0;
+  color: #00489A;
+}
+
 .wrapper {
   width: 100%;
   display: flex;
