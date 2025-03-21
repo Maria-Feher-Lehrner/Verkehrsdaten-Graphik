@@ -9,16 +9,16 @@ import { useDataStore } from "./stores/dataStore.js"
 const app = createApp(App)
 app.use(createPinia())
 
-const uiStore = useUIStore()
-const dataStore = useDataStore()
+app.mount('#app')
 
 const initApp = async () => {
+  const uiStore = useUIStore()
+  const dataStore = useDataStore()
+
   await importData()
   console.log("Data import complete. App is ready.")
   uiStore.setImportComplete(true)
   await dataStore.fetchData()
 }
 
-initApp().then(() => {
-  app.mount('#app')
-})
+initApp()
