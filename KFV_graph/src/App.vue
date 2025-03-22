@@ -11,7 +11,7 @@ const uiStore = useUIStore()
 const dataStore = useDataStore()
 const importComplete = computed(() => uiStore.importComplete)
 
-const groupBy = keyLabels[dataStore.groupBy]
+const groupBy = computed(() => keyLabels[dataStore.groupBy] || 'Unbekannt')
 
 </script>
 
