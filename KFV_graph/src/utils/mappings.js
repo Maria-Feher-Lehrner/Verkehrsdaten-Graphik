@@ -36,6 +36,19 @@ export const dataMappings = {
   },
 };
 
+export const keyLabels = {
+  jahr: "Jahr",
+  monat: "Monat",
+  stunde: "Tageszeit",
+  wochentag: "Wochentag",
+  bundesland: "Bundesland",
+  gebiet: "Gebiet",
+  verkehrsart: "Verkehrsart",
+  alterGr: "Altersgruppe",
+  geschlecht: "Geschlecht",
+  ursache: "Ursache"
+}
+
 export const bundeslandColors = {
   burgenland: "#1F3E9D",
   kärnten: "#B91015",
