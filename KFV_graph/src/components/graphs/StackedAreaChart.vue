@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, watch } from 'vue'
+import { computed, defineProps, watch } from 'vue'
 import { defineChartComponent } from 'vue-chart-3'
 import {
   Chart as ChartJS,
@@ -16,6 +16,9 @@ import {
 ChartJS.register(Title, Tooltip, Legend, LineController, LineElement, PointElement, LinearScale, CategoryScale)
 
 const LineChart = defineChartComponent('LineChart', 'line')
+
+// Using chartKey to force rerender on update of chartData
+const chartKey = computed(() => JSON.stringify(props.chartData))
 
 const props = defineProps({
   chartData: {
@@ -53,7 +56,7 @@ const chartOptions = {
 </script>
 
 <template>
-  <LineChart :chart-data="chartData" :options="chartOptions" />
+  <LineChart :key="chartKey" :chart-data="chartData" :options="chartOptions" />
 </template>
 
 <style scoped>
