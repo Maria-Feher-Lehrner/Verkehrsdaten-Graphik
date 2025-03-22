@@ -1,4 +1,4 @@
-import { dataMappings, bundeslandColors } from '../utils/mappings.js'
+import { dataMappings, colorPalette } from '../utils/mappings.js'
 import { db } from './db.js'
 
 export async function importData() {
@@ -23,8 +23,8 @@ export async function importData() {
     }))
 
     // Clears the previous data in IndexedDB before inserting new data
-    await db.accidents.clear();
-    console.log('Old data cleared from IndexedDB.');
+    await db.accidents.clear()
+    console.log('Old data cleared from IndexedDB.')
 
     await db.accidents.bulkPut(mappedData)
     console.log('Data imported successfully!')
@@ -34,30 +34,30 @@ export async function importData() {
 }
 
 async function fetchAllLocalData() {
-  return await db.accidents.toArray();
+  return await db.accidents.toArray()
 }
 
 function applyFilters(data, filters) {
-  if (!filters.topic || !filters.value) return data; // No filtering if empty
-  return data.filter(entry => entry[filters.topic] === filters.value);
+  if (!filters.topic || !filters.value) return data // No filtering if empty
+  return data.filter(entry => entry[filters.topic] === filters.value)
 }
 
 function aggregateDataByGroup(filteredData, groupBy) {
-  const aggregationMap = {};
+  const aggregationMap = {}
 
   filteredData.forEach(entry => {
-    const key = `${entry.jahr}-${entry[groupBy]}`;
+    const key = `${entry.jahr}-${entry[groupBy]}`
 
     if (!aggregationMap[key]) {
       aggregationMap[key] = {
         jahr: entry.jahr,
         [groupBy]: entry[groupBy],
         totalFatalities: 0
-      };
+      }
     }
 
-    aggregationMap[key].totalFatalities += entry.getoetete;
-  });
+    aggregationMap[key].totalFatalities += entry.getoetete
+  })
 
   const result = Object.values(aggregationMap)
   console.log('[DEBUG] Aggregated Data:', result.slice(0, 5))
@@ -68,64 +68,75 @@ export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
   try {
     console.log('[DEBUG] Fetching aggregated data with groupBy:', groupBy, 'and activeFilters:', filters)
 
-    const allData = await fetchAllLocalData();
+    const allData = await fetchAllLocalData()
     console.log('[DEBUG] Retrieved', allData.length, 'entries from IndexedDB')
 
-    const filteredData = applyFilters(allData, filters);
-    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying activeFilters');
+    const filteredData = applyFilters(allData, filters)
+    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying activeFilters')
 
-    return aggregateDataByGroup(filteredData, groupBy);
+    return aggregateDataByGroup(filteredData, groupBy)
   } catch (error) {
-    console.error('Error aggregating data:', error);
-    return [];
+    console.error('Error aggregating data:', error)
+    return []
   }
 }
 
-
-function createDataset(bundesland, labels) {
+function createDataset(groupKey, labels, index) {
   return {
-    label: bundesland,
-    backgroundColor: bundeslandColors[bundesland.toLowerCase()] || "#CCCCCC",
-    data: Array(labels.length).fill(0),
-  };
+    label: groupKey,
+    backgroundColor: colorPalette[index % colorPalette.length],
+    data: Array(labels.length).fill(0)
+  }
 }
 
 function sortDatasetsByLabel(datasets) {
   return datasets.sort((a, b) => {
-    const bundeslandA = a.label;
-    const bundeslandB = b.label;
-    return bundeslandA.localeCompare(bundeslandB); // Sorting alphabetically
+    const entryA = a.label
+    const entryB = b.label
+
+    if (typeof entryA === 'number' && typeof entryB === 'number') {
+      return entryA - entryB; // Sorting numerically
+    }
+
+    return String(entryA).localeCompare(String(entryB)); // Sorting alphabetically
   });
 }
 
-export function transformDataForChart(aggregatedData) {
+export function transformDataForChart(aggregatedData, groupByCategory) {
+  if (!aggregatedData || aggregatedData.length === 0) {
+    console.warn('[WARN] No aggregated data available for chart transformation.')
+    return { labels: [], datasets: [] }
+  }
 
-  const labels = [...new Set(aggregatedData.map(entry => entry.jahr))].sort();
+  const labels = [...new Set(aggregatedData.map(entry => entry.jahr))].sort()
 
-  const datasetsMap = new Map();
+  const datasetsMap = new Map()
+  let colorIndex = 0 // index for color palette
 
   aggregatedData.forEach(entry => {
-    const { jahr, bundesland, totalFatalities } = entry;
+    const { jahr, totalFatalities } = entry
+    const groupKey = entry[groupByCategory]
 
-    if (!datasetsMap.has(bundesland)) {
-      datasetsMap.set(bundesland, createDataset(bundesland, labels));
+    if (!datasetsMap.has(groupKey)) {
+      datasetsMap.set(groupKey, createDataset(groupKey, labels, colorIndex))
+      colorIndex++
     }
 
-    const dataset = datasetsMap.get(bundesland);
-    const index = labels.indexOf(jahr);
-    dataset.data[index] = totalFatalities;
-  });
+    const dataset = datasetsMap.get(groupKey)
+    const index = labels.indexOf(jahr)
+    dataset.data[index] = totalFatalities
+  })
 
-  const sortedDatasets = sortDatasetsByLabel(Array.from(datasetsMap.values()));
+  const sortedDatasets = sortDatasetsByLabel(Array.from(datasetsMap.values()))
 
   return {
     labels,
-    datasets: sortedDatasets,
-  };
+    datasets: sortedDatasets
+  }
 }
 
 export async function getFilterValues() {
-  const allData = await fetchAllLocalData();
+  const allData = await fetchAllLocalData()
 
   const uniqueValues = {
     gebiet: new Set(),
@@ -133,19 +144,19 @@ export async function getFilterValues() {
     alterGr: new Set(),
     geschlecht: new Set(),
     ursache: new Set()
-  };
+  }
 
   allData.forEach(entry => {
     Object.keys(uniqueValues).forEach(key => {
       if (entry[key]) {
-        uniqueValues[key].add(entry[key]);
+        uniqueValues[key].add(entry[key])
       }
-    });
-  });
+    })
+  })
 
   return Object.fromEntries(
     Object.entries(uniqueValues).map(([key, valueSet]) => [key, [...valueSet]])
-  );
+  )
 }
 
 
