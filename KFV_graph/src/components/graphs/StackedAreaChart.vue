@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, watch } from 'vue'
+import { defineProps } from 'vue'
 import { defineChartComponent } from 'vue-chart-3'
 import {
   Chart as ChartJS,
@@ -24,11 +24,6 @@ const props = defineProps({
     default: () => ({ labels: [], datasets: [] }) // Ensures the StackedAreaChart Component always has a default
   }
 })
-
-// TODO: delete degbug watcher
-watch(() => props.chartData, (newVal) => {
-  console.log("[DEBUG] chartData received in StackedAreaChart:", newVal);
-}, { deep: true });
 
 const chartOptions = {
   responsive: true,
