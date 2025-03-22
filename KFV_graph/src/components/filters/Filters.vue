@@ -6,7 +6,6 @@ const dataStore = useDataStore()
 const selectedTopic = ref('')
 const selectedValue = ref('')
 
-
 const categoryLabels = {
   gebiet: 'Gebiet',
   verkehrsart: 'Verkehrsart',

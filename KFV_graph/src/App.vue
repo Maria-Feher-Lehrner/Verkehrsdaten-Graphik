@@ -1,12 +1,18 @@
 <script setup>
 import { computed } from 'vue'
 import { useUIStore } from '@/stores/uiStore.js'
+import { useDataStore } from '@/stores/dataStore.js'
+import { keyLabels } from '@/utils/mappings.js'
 import Footer from './components/Footer.vue'
 import ChartContainer from '@/components/graphs/ChartContainer.vue'
 import Filters from '@/components/filters/Filters.vue'
 
 const uiStore = useUIStore()
+const dataStore = useDataStore()
 const importComplete = computed(() => uiStore.importComplete)
+
+const groupBy = keyLabels[dataStore.groupBy]
+
 </script>
 
 <template>
@@ -15,7 +21,7 @@ const importComplete = computed(() => uiStore.importComplete)
       <img alt="KFV logo" class="logo" src="./assets/KFV_Logo.jpg" width="203" height="93" />
       <div class="title">
         <h1>Verkehrstote in Österreich</h1>
-        <h2>Nach Bundesland und Berichtsjahr</h2>
+        <h2>Nach {{ groupBy }} und Berichtsjahr</h2>
       </div>
     </div>
   </header>
