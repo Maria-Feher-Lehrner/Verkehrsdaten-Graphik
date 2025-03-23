@@ -38,4 +38,16 @@ const toggleChartType = () => {
 .container {
   padding: 1rem;
 }
+
+button {
+  background: #E7E773;
+  color: #00489a;
+  border-radius: 4px;
+  border: #8B8797;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
 </style>
