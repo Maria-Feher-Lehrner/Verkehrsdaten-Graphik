@@ -19,8 +19,9 @@ export const useDataStore = defineStore('dataStore', {
           console.warn('[WARN] No aggregated data found.')
         }
 
-        this.chartData = transformDataForChart(aggregatedData)
+        this.chartData = transformDataForChart(aggregatedData, this.groupBy)
       } catch (error) {
+        console.error('[ERROR] Failed to fetch chart data:', error)
       }
     },
 

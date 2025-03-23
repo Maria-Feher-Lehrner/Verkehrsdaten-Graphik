@@ -36,14 +36,22 @@ export const dataMappings = {
   },
 };
 
-export const bundeslandColors = {
-  burgenland: "#1F3E9D",
-  kärnten: "#B91015",
-  niederösterreich: "#6C67BC",
-  oberösterreich: "#99C001",
-  salzburg: "#70B3F4",
-  steiermark: "#D78A33",
-  tirol: "#E946B0",
-  vorarlberg: "#1F7F26",
-  wien: "#F8DD2B"
-};
+export const keyLabels = {
+  jahr: "Jahr",
+  monat: "Monat",
+  stunde: "Uhrzeit",
+  wochentag: "Wochentag",
+  bundesland: "Bundesland",
+  gebiet: "Gebiet",
+  verkehrsart: "Verkehrsart",
+  alterGr: "Altersgruppe",
+  geschlecht: "Geschlecht",
+  ursache: "Ursache"
+}
+
+export const colorPalette = [
+  "#B91015", "#1F3E9D", "#99C001", "#6C67BC", "#70B3F4", "#D78A33",
+  "#E946B0", "#1F7F26", "#F8DD2B", "#E85E5B", "#8A2BE2", "#FF7F50",
+  "#4682B4", "#32CD32", "#FFD700", "#DC143C", "#8B0000", "#00CED1",
+  "#FF69B4", "#556B2F", "#7FFFD4", "#FF4500", "#6495ED", "#ADFF2F"
+]

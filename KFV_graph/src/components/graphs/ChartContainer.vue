@@ -35,7 +35,7 @@ const toggleChartType = () => {
 </template>
 
 <style scoped>
-.container{
+.container {
   padding: 1rem;
 }
 </style>
