@@ -39,7 +39,7 @@ export const dataMappings = {
 export const keyLabels = {
   jahr: "Jahr",
   monat: "Monat",
-  stunde: "Tageszeit",
+  stunde: "Uhrzeit",
   wochentag: "Wochentag",
   bundesland: "Bundesland",
   gebiet: "Gebiet",

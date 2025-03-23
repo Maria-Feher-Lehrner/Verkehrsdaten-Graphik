@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, watch } from 'vue'
+import { computed, defineProps } from 'vue'
 import { defineChartComponent } from 'vue-chart-3'
 import {
   Chart as ChartJS,
@@ -28,11 +28,6 @@ const props = defineProps({
   }
 })
 
-// TODO: delete degbug watcher
-watch(() => props.chartData, (newVal) => {
-  console.log("[DEBUG] chartData received in StackedAreaChart:", newVal);
-}, { deep: true });
-
 const chartOptions = {
   responsive: true,
   plugins: {
@@ -52,7 +47,6 @@ const chartOptions = {
     }
   }
 }
-
 </script>
 
 <template>

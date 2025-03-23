@@ -24,10 +24,7 @@ export async function importData() {
 
     // Clears the previous data in IndexedDB before inserting new data
     await db.accidents.clear()
-    console.log('Old data cleared from IndexedDB.')
-
     await db.accidents.bulkPut(mappedData)
-    console.log('Data imported successfully!')
   } catch (error) {
     console.error('Error importing data:', error)
   }
@@ -60,23 +57,18 @@ function aggregateDataByGroup(filteredData, groupBy) {
   })
 
   const result = Object.values(aggregationMap)
-  console.log('[DEBUG] Aggregated Data:', result.slice(0, 5))
   return result
 }
 
 export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
   try {
-    console.log('[DEBUG] Fetching aggregated data with groupBy:', groupBy, 'and activeFilters:', filters)
 
     const allData = await fetchAllLocalData()
-    console.log('[DEBUG] Retrieved', allData.length, 'entries from IndexedDB')
 
     const filteredData = applyFilters(allData, filters)
-    console.log('[DEBUG] Filtered Data:', filteredData.length, 'entries after applying activeFilters')
 
     return aggregateDataByGroup(filteredData, groupBy)
   } catch (error) {
-    console.error('Error aggregating data:', error)
     return []
   }
 }

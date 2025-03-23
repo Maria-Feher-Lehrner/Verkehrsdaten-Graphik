@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, toRaw } from 'vue'
+import { computed, watch } from 'vue'
 import { useDataStore } from '@/stores/dataStore.js'
 import { useUIStore } from '@/stores/uiStore.js'
 import StackedAreaChart from './StackedAreaChart.vue'
@@ -10,30 +10,13 @@ const uiStore = useUIStore()
 const chartType = computed(() => uiStore.chartType)
 const chartData = computed(() => dataStore.chartData || { labels: [], datasets: [] })
 
-console.log('[DEBUG] chartData in ChartContainer:', chartData.value)
-console.log('[DEBUG] chartData type:', typeof chartData.value)
-console.log('[DEBUG] chartData is an array?', Array.isArray(chartData.value.datasets))
-console.log('Chart Data stringified:', JSON.stringify(chartData.value))
-
 const isChartDataReady = computed(() => {
-  console.log('[DEBUG] Checking isChartDataReady:', chartData.value)
   return chartData.value?.datasets?.length > 0
 })
 
 const toggleChartType = () => {
   uiStore.toggleChart()
 }
-
-//TODO: delete debug watchers
-watch(chartData, (newVal, oldVal) => {
-  console.log('[DEBUG] chartData updated in ChartContainer:', newVal)
-  console.log('[DEBUG] Previous chartData:', oldVal)
-}, { deep: true, immediate: true })
-
-watch(isChartDataReady, (newVal) => {
-  console.log('[DEBUG] isChartDataReady changed:', newVal)
-})
-
 </script>
 
 <template>
@@ -52,7 +35,7 @@ watch(isChartDataReady, (newVal) => {
 </template>
 
 <style scoped>
-.container{
+.container {
   padding: 1rem;
 }
 </style>
