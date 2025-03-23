@@ -146,8 +146,22 @@ export async function getFilterValues() {
     })
   })
 
+  // Custom order for alterGr
+  const alterGrCustomOrder = [
+    "0-14 J.", "15-24 J.", "25-34 J.", "35-44 J.",
+    "45-54 J.", "55-64 J.", "65-74 J.", "75+ J."
+  ]
+
   return Object.fromEntries(
-    Object.entries(uniqueValues).map(([key, valueSet]) => [key, [...valueSet]])
+    Object.entries(uniqueValues).map(([key, valueSet]) => {
+      let sortedValues = [...valueSet]
+
+      if (key === "alterGr") {
+        sortedValues.sort((a, b) => alterGrCustomOrder.indexOf(a) - alterGrCustomOrder.indexOf(b))
+      }
+
+      return [key, sortedValues]
+    })
   )
 }
 
