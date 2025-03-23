@@ -1,16 +1,16 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useUIStore = defineStore("uiStore", {
+export const useUIStore = defineStore('uiStore', {
   state: () => ({
     importComplete: false,
-    chartType: "stackedArea", // Default chart type
+    chartType: 'stackedArea', // Default chart type
   }),
   actions: {
     toggleChart() {
-      this.chartType = this.chartType === "stackedArea" ? "stackedBar" : "stackedArea";
+      this.chartType = this.chartType === 'stackedArea' ? 'stackedBar' : 'stackedArea'
     },
     setImportComplete(value) {
-      this.importComplete = value;
-    }
+      this.importComplete = value
+    },
   }
-});
+})
