@@ -36,14 +36,12 @@ onMounted(() => {
 })
 
 const applyFilters = () => {
-  console.log('[DEBUG] selectedFilters:', selectedFilterTopic.value, selectedFilterValue.value)
   if (selectedFilterTopic.value && selectedFilterValue.value) {
     dataStore.setFilters(selectedFilterTopic.value, selectedFilterValue.value)
   }
 }
 
 const setGroupBy = () => {
-  console.log('[DEBUG] groupBy:', selectedGroupByValue.value)
   if (selectedGroupByValue.value) {
     dataStore.setGroupBy(selectedGroupByValue.value)
   }
