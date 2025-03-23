@@ -1,4 +1,5 @@
 <script setup>
+import { lightenColor } from '@/utils/colors.js'
 import { computed, defineProps, watch } from 'vue'
 import { defineChartComponent } from 'vue-chart-3'
 import {
@@ -10,10 +11,11 @@ import {
   LineElement,
   PointElement,
   LinearScale,
-  CategoryScale
+  CategoryScale,
+  Filler
 } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, LineController, LineElement, PointElement, LinearScale, CategoryScale)
+ChartJS.register(Title, Tooltip, Legend, LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler)
 
 const LineChart = defineChartComponent('LineChart', 'line')
 
@@ -28,10 +30,24 @@ const props = defineProps({
   }
 })
 
+const updatedChartData = computed(() => ({
+  labels: props.chartData.labels,
+  datasets: props.chartData.datasets.map(dataset => {
+    const lightenedColor = lightenColor(dataset.backgroundColor, 30); // Lighten by 30%
+
+    return {
+      ...dataset,
+      backgroundColor: lightenedColor,
+      borderColor: dataset.backgroundColor,
+      borderWidth: 2
+    };
+  })
+}));
+
 const chartOptions = {
   responsive: true,
   plugins: {
-    legend: { position: 'top' }
+    legend: { position: 'bottom' }
   },
   scales: {
     x: {
@@ -43,14 +59,18 @@ const chartOptions = {
   },
   elements: {
     line: {
-      fill: true
+      fill: true,
+      borderWidth: 2
+    },
+    point: {
+      radius: 1
     }
   }
 }
 </script>
 
 <template>
-  <LineChart :key="chartKey" :chart-data="chartData" :options="chartOptions" />
+  <LineChart :key="chartKey" :chart-data="updatedChartData" :options="chartOptions" />
 </template>
 
 <style scoped>
