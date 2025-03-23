@@ -10,4 +10,4 @@ Umsetzung in vue-3 unter Verwendung von:
 
 **Anmerkungen**
 Bei der Gestaltung der Arbeitsprobe habe ich mich vor allem auf die Gestaltung einer komponentenbasierten App-Architektur und die Filter- bzw. Sortierfunktionalitäten konzentriert. 
-Die grafische Gestaltung war dabei vorerst für mich zweitrangig und ich würde sie erst in den nächsten Schritten weiter ausarbeiten.
+Die grafische Gestaltung (Farbschemata, Kontraste, CI...) war dabei vorerst für mich zweitrangig und ich würde sie erst in den nächsten Schritten weiter ausarbeiten.
