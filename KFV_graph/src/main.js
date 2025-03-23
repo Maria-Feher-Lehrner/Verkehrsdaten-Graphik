@@ -16,6 +16,7 @@ const initApp = async () => {
   const dataStore = useDataStore()
 
   await importData()
+  console.log("Data import complete. App is ready.")
   uiStore.setImportComplete(true)
   await dataStore.fetchData()
 }
