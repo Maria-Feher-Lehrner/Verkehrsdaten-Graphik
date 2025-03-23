@@ -21,11 +21,12 @@ const props = defineProps({
 const chartOptions = {
   responsive: true,
   plugins: {
-    legend: { position: 'top' }
+    legend: { position: 'bottom' }
   },
   scales: {
     x: {
       type: 'category',
+      stacked: true,
     },
     y: {
       stacked: true,
