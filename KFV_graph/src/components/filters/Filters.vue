@@ -1,7 +1,7 @@
 <script setup>
 import { useDataStore } from '@/stores/dataStore.js'
 import { ref, computed, onMounted } from 'vue'
-import { keyLabels} from '@/utils/mappings.js'
+import { keyLabels } from '@/utils/mappings.js'
 
 const dataStore = useDataStore()
 const selectedFilterTopic = ref('')
@@ -24,7 +24,7 @@ const groupByLabels = {
   geschlecht: keyLabels.geschlecht,
   monat: keyLabels.monat,
   wochentag: keyLabels.wochentag,
-  stunde: keyLabels.stunde,
+  stunde: keyLabels.stunde
 }
 
 const availableValues = computed(() => {
@@ -90,19 +90,17 @@ const updateValues = () => {
 
 <style scoped>
 .wrapper {
-
-  padding-left: 2rem;
-  padding-right: 2rem;
-  margin-left: 2rem;
-  margin-right: 2rem;
+  margin: 1rem auto;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
   background: #E7E773;
   color: #00489a;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 60%;
+  width: 50%;
 }
 
 @media (max-width: 768px) {
@@ -113,11 +111,42 @@ const updateValues = () => {
   }
 }
 
+.filters {
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+}
+
+.groupings{
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+}
 h3 {
   margin-bottom: 5px;
 }
 
 label {
   display: block;
+}
+
+select {
+  margin-bottom: 0.75rem;
+  min-width: 12em;
+  position: relative;
+  display: inline-block;
+  margin-right: 1em;
+  min-height: 2em;
+  max-height: 2em;
+  overflow: hidden;
+  top: .5em;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  color: #444;
+
+  outline: none;
+  border: .06em solid transparent;
+  border-radius: 0.25em;
 }
 </style>
