@@ -48,10 +48,3 @@ export const keyLabels = {
   geschlecht: "Geschlecht",
   ursache: "Ursache"
 }
-
-export const colorPalette = [
-  "#B91015", "#1F3E9D", "#99C001", "#6C67BC", "#70B3F4", "#D78A33",
-  "#E946B0", "#1F7F26", "#F8DD2B", "#E85E5B", "#8A2BE2", "#FF7F50",
-  "#4682B4", "#32CD32", "#FFD700", "#DC143C", "#8B0000", "#00CED1",
-  "#FF69B4", "#556B2F", "#7FFFD4", "#FF4500", "#6495ED", "#ADFF2F"
-]

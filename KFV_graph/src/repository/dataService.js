@@ -1,4 +1,5 @@
-import { dataMappings, colorPalette } from '../utils/mappings.js'
+import { dataMappings,  } from '../utils/mappings.js'
+import { colorPalette } from '../utils/colors.js'
 import { db } from './db.js'
 
 export async function importData() {
@@ -69,8 +70,8 @@ export async function getAggregatedData(groupBy = 'bundesland', filters = {}) {
 
     return aggregateDataByGroup(filteredData, groupBy)
   } catch (error) {
-    console.error('Error aggregating data:', error);
-    return [];
+    console.error('Error aggregating data:', error)
+    return []
   }
 }
 
@@ -88,11 +89,11 @@ function sortDatasetsByLabel(datasets) {
     const entryB = b.label
 
     if (typeof entryA === 'number' && typeof entryB === 'number') {
-      return entryA - entryB; // Sorting numerically
+      return entryA - entryB // Sorting numerically
     }
 
-    return String(entryA).localeCompare(String(entryB)); // Sorting alphabetically
-  });
+    return String(entryA).localeCompare(String(entryB)) // Sorting alphabetically
+  })
 }
 
 export function transformDataForChart(aggregatedData, groupByCategory) {
@@ -149,15 +150,15 @@ export async function getFilterValues() {
 
   // Custom order for alterGr
   const alterGrCustomOrder = [
-    "0-14 J.", "15-24 J.", "25-34 J.", "35-44 J.",
-    "45-54 J.", "55-64 J.", "65-74 J.", "75+ J."
+    '0-14 J.', '15-24 J.', '25-34 J.', '35-44 J.',
+    '45-54 J.', '55-64 J.', '65-74 J.', '75+ J.'
   ]
 
   return Object.fromEntries(
     Object.entries(uniqueValues).map(([key, valueSet]) => {
       let sortedValues = [...valueSet]
 
-      if (key === "alterGr") {
+      if (key === 'alterGr') {
         sortedValues.sort((a, b) => alterGrCustomOrder.indexOf(a) - alterGrCustomOrder.indexOf(b))
       }
 
